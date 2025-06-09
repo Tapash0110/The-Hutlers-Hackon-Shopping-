@@ -1,6 +1,6 @@
-# The Hustlers Hackon
+#Hackon
 
-Team: The Hustlers
+#Team: The Hustlers
 
 Theme: Sustainable Shopping Experience
 

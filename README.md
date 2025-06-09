@@ -1,4 +1,4 @@
-# The-Hustlers-Hackon-Shopping
+# The Hustlers Hackon
 
 Team: The Hustlers
 

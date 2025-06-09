@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../public/favicon.ico" />
+    <title>Amazon Assistant - Your Personalized Conversational Chat Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(105deg, #fcfcfc 0%, #f4f2ef 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #58cb4d, #58db61);
+            backdrop-filter: blur(0px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        header h1 {
+            color: #0c0c0c;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: #130e0e;
+            font-size: 1rem;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(13deg, #31e921, #52ef55);
+            color: rgb(19, 12, 12);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background:linear-gradient(135deg, #c2f58e, #90f4f4);
+        }
+
+        .chat-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .message-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            word-wrap: break-word;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .user-message .message {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message .message {
+            background: white;
+            color: #333;
+            border: 1px solid #e1e5e9;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .bot-avatar {
+            background: #64e77e;
+            color: white;
+        }
+
+        .input-container {
+            padding: 1rem 1.5rem 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid #e1e5e9;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #FF9900;
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.1);
+        }
+
+        .chat-button {
+            background: linear-gradient(135deg, #7fe834, #7fee90);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 153, 0, 0.3);
+        }
+
+        .cart-button {
+            background: linear-gradient(135deg, #090a09, #1c271f);
+            color: rgb(247, 245, 245);
+            border: none;
+            border-radius: 15px;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cart-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .product-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 200px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            background: #f8f9fa;
+            padding: 1rem;
+        }
+
+        .product-info {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .product-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            color: #FF9900;
+            font-weight: 700;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            max-width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #ccc;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 120px);
+                border-radius: 15px;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+            
+            .product-card {
+                width: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🛒 Amazon Assistant</h1>
+        <p>Your Personalized Conversational Shopping Companion</p>
+    </header>
+    
+    <main>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div>Chat Assistant</div>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Online</span>
+                </div>
+            </div>
+            
+            <div class="chat-box" id="chatBox">
+                <div class="message-container bot-message">
+                    <div class="avatar bot-avatar">AI</div>
+                    <div class="message">Welcome to Amazon Assistant! I'm here to help you find the perfect products. How can I assist you today? 🛍️</div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <a class="cart-button" href="http://localhost:3000/Cart" target="_blank">🛒 View Cart</a>
+                <input class="chat-input" id="userInput" type="text" placeholder="Ask me anything about products...">
+                <button class="chat-button" id="submitBtn">➤</button>
+            </div>
+            
+            <div class="product-showcase" id="productShowcase">
+                <a href="http://localhost:3000/products/4" class="product-card" id="productCard1" style="display: none;">
+                    <img class="product-image" id="productImage1" src="" alt="Product">
+                    <div class="product-info">
+                        <div class="product-title">Warm Sweater</div>
+                        <div class="product-price">$29.99</div>
+                    </div>
+                </a>
+                
+                <a href="http://localhost:3000/products/3" class="product-card" id="productCard2" style="display: none;">
+                    <img class="product-image" id="productImage2" src="" alt="Product">
+                    <div class="product-info">
+                        <div class="product-title">Winter Jacket</div>
+                        <div class="product-price">$79.99</div>
+                    </div>
+                </a>
+                
+                <a href="http://localhost:3000/products/9" class="product-card" id="productCard3" style="display: none;">
+                    <img class="product-image" id="productImage3" src="" alt="Product">
+                    <div class="product-info">
+                        <div class="product-title">External HDD</div>
+                        <div class="product-price">$89.99</div>
+                    </div>
+                </a>
+                
+                <a href="http://localhost:3000/products/10" class="product-card" id="productCard4" style="display: none;">
+                    <img class="product-image" id="productImage4" src="" alt="Product">
+                    <div class="product-info">
+                        <div class="product-title">SSD Drive</div>
+                        <div class="product-price">$119.99</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const chatBox = document.getElementById("chatBox");
+        const userInput = document.getElementById("userInput");
+        const submitBtn = document.getElementById("submitBtn");
+
+        function addBotMessage(message, delay = 0) {
+            setTimeout(() => {
+                const messageContainer = document.createElement("div");
+                messageContainer.className = "message-container bot-message";
+                messageContainer.innerHTML = `
+                    <div class="avatar bot-avatar">AI</div>
+                    <div class="message">${message}</div>
+                `;
+                chatBox.appendChild(messageContainer);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, delay);
+        }
+
+        function addUserMessage(message) {
+            const messageContainer = document.createElement("div");
+            messageContainer.className = "message-container user-message";
+            messageContainer.innerHTML = `
+                <div class="message">${message}</div>
+                <div class="avatar user-avatar">You</div>
+            `;
+            chatBox.appendChild(messageContainer);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingContainer = document.createElement("div");
+            typingContainer.className = "message-container bot-message";
+            typingContainer.id = "typingIndicator";
+            typingContainer.innerHTML = `
+                <div class="avatar bot-avatar">AI</div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatBox.appendChild(typingContainer);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById("typingIndicator");
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function showProduct(productNum, imageSrc) {
+            const productCard = document.getElementById(`productCard${productNum}`);
+            const productImage = document.getElementById(`productImage${productNum}`);
+            productImage.src = imageSrc;
+            productCard.style.display = "block";
+        }
+
+        submitBtn.addEventListener("click", handleSubmit);
+        userInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                handleSubmit();
+            }
+        });
+
+        function handleSubmit() {
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+
+            addUserMessage(userMessage);
+            showTypingIndicator();
+
+            const lowerMessage = userMessage.toLowerCase();
+
+            setTimeout(() => {
+                hideTypingIndicator();
+
+                if (lowerMessage === "suggest me some warm clothes") {
+                    addBotMessage("Great choice! I found some cozy sweaters perfect for the weather. Here's what I recommend: 🧥");
+                    setTimeout(() => {
+                        showProduct(1, "https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg");
+                    }, 500);
+                    
+                } else if (lowerMessage === "i am looking for something more warm") {
+                    addBotMessage("Perfect! Let me show you something warmer 🔥");
+                    setTimeout(() => {
+                        addBotMessage("Here's a fantastic winter jacket that will keep you extra warm:");
+                        showProduct(2, "https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg");
+                    }, 1000);
+                    
+                } else if (lowerMessage === "suggest me some storage devices") {
+                    addBotMessage("Excellent! I have some great storage solutions for you 💾");
+                    setTimeout(() => {
+                        addBotMessage("Here's a reliable external hard drive with excellent value:");
+                        showProduct(3, "https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg");
+                    }, 1000);
+                    setTimeout(() => {
+                        addBotMessage("And if you prefer speed and energy efficiency, check out this premium SSD:");
+                        showProduct(4, "https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_.jpg");
+                    }, 2000);
+                    
+                } else {
+                    const responses = [
+                        "That's interesting! Let me help you find what you're looking for. 🔍",
+                        "I'm here to assist! Could you be more specific about what you need? 😊",
+                        "Thanks for your message! How can I help you shop better today? 🛍️",
+                        "Great! I'm analyzing your request to provide the best recommendations... ✨"
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addBotMessage(randomResponse);
+                }
+            }, 1500);
+
+            userInput.value = "";
+        }
+    </script>
+</body>
+</html>

@@ -23,7 +23,6 @@ Our proposed solution is based on the concept of integrating technology and util
 
 # Tech Stack:
  1)Machine Learning (ML)
- 
  2) Natural Language Processing (NLP)
 
  3) Web Development

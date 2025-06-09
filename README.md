@@ -11,5 +11,4 @@ Chatbot:
 ![Screenshot 2025-06-09 234404](https://github.com/user-attachments/assets/276a059b-09f9-4402-b9b9-9255c246d6fd)
 
 Proposed Solution:
-![image](https://github.com/user-attachments/assets/eb9c7141-7740-4ac8-beb2-d9372d68fe72)
-
+![Solution 2](https://github.com/user-attachments/assets/a76babb7-5c7c-4885-883c-de518bec3e84)

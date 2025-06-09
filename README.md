@@ -22,17 +22,13 @@ Our proposed solution is based on the concept of integrating technology and util
 ![Solution 2](https://github.com/user-attachments/assets/a76babb7-5c7c-4885-883c-de518bec3e84)
 
 # Tech Stack:
- 1)Machine Learning (ML)
+ 1) Machine Learning (ML)
  2) Natural Language Processing (NLP)
-
  3) Web Development
+ 4) Green Computing Technologies
+ 5) Blockchain
+ 6) AWS (Amazon Web Services)
 
- 4)Green Computing Technologies
-
- 5)Blockchain
-
- 6)AWS (Amazon Web Services)
-
-# Screenshot:
+ # Screenshot:
 
 ![Screenshot 2025-06-09 234404](https://github.com/user-attachments/assets/276a059b-09f9-4402-b9b9-9255c246d6fd)
